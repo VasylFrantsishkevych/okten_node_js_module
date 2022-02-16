@@ -56,30 +56,30 @@ fs.readFile(path.join(__dirname, 'file1.txt'),(err, data) => {
 // і напишіть функцію яка буде зчитувати папку і перевіряти якщо дані які в ній лежать - це файли тоді вам потрібно їх очистити,
 // але не видаляти, якщо дані - це папки, вам потрібно їх перейменувати і додати до назви префікс _new
 
-// fs.mkdir(path.join(__dirname, 'task3', 'file1'), (err) => {
-//     if (err) {
-//         console.log(err);
-//         throw err;
-//     }
-//     fs.mkdir(path.join(__dirname, 'task3', 'file2'), (err) => {
-//         if (err) {
-//             console.log(err);
-//             throw err;
-//         }
-//         fs.writeFile(path.join(__dirname, 'task3', 'text1.txt'), 'hello', (err) => {
-//             if (err) {
-//                 console.log(err);
-//                 throw err;
-//             }
-//             fs.writeFile(path.join(__dirname, 'task3', 'text2.txt'), 'goodbye', (err) => {
-//                 if (err) {
-//                     console.log(err);
-//                     throw err;
-//                 }
-//             })
-//         })
-//     })
-// })
+fs.mkdir(path.join(__dirname, 'task3', 'file1'), (err) => {
+    if (err) {
+        console.log(err);
+        throw err;
+    }
+    fs.mkdir(path.join(__dirname, 'task3', 'file2'), (err) => {
+        if (err) {
+            console.log(err);
+            throw err;
+        }
+        fs.writeFile(path.join(__dirname, 'task3', 'text1.txt'), 'hello', (err) => {
+            if (err) {
+                console.log(err);
+                throw err;
+            }
+            fs.writeFile(path.join(__dirname, 'task3', 'text2.txt'), 'goodbye', (err) => {
+                if (err) {
+                    console.log(err);
+                    throw err;
+                }
+            })
+        })
+    })
+})
 
 function readFile(folder) {
     fs.readdir(path.join(__dirname, `${folder}`), (err, data) => {

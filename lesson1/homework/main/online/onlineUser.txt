@@ -1,0 +1,4 @@
+
+Name: Masha Age: 21 City: Lviv,
+Name: Andriy Age: 22 City: Kharkiv,
+Name: Dima Age: 19 City: Brody
