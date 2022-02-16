@@ -1,26 +1,25 @@
 const fs = require('fs');
 const path = require("path");
 
+// 1. Спробуйте створити якийсь файл txt, прочитайте з нього дані і одразу, дані які ви отримали запишіть їх в інший файл,
+// в вас вийде невеликий callback hell, пізніше я вам покажу як можна це обійти, але поки зробіть так
+
 fs.writeFile(path.join(__dirname, 'file1.txt'), 'Name: Masha Age: 21 City: Lviv,', (err) => {
     if (err) {
         console.log(err);
         throw err;
     }
-})
-
-// 1. Спробуйте створити якийсь файл txt, прочитайте з нього дані і одразу, дані які ви отримали запишіть їх в інший файл,
-// в вас вийде невеликий callback hell, пізніше я вам покажу як можна це обійти, але поки зробіть так
-
-fs.readFile(path.join(__dirname, 'file1.txt'),(err, data) => {
-    if (err) {
-        console.log(err);
-        throw err
-    }
-    fs.appendFile(path.join(__dirname, 'file2.txt'), `${data}`, (err) => {
+    fs.readFile(path.join(__dirname, 'file1.txt'), (err, data) => {
         if (err) {
             console.log(err);
             throw err
         }
+        fs.appendFile(path.join(__dirname, 'file2.txt'), `${data}`, (err) => {
+            if (err) {
+                console.log(err);
+                throw err
+            }
+        })
     })
 })
 
@@ -101,7 +100,7 @@ function readFile(folder) {
                             throw err;
                         }
                     })
-                    readFile(path.join(`${folder}`+ '/' + file));
+                    readFile(path.join(`${folder}`, file));
                 }else {
                     console.log('file:' + file)
                     fs.truncate(path.join(`${folder}`, file), (err) => {
