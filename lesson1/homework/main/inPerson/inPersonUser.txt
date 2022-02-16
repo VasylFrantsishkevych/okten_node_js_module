@@ -1,4 +1,0 @@
-
-Name: Kolia Age: 15 City:Kyiv,
-Name: Olia Age: 20 City:Lviv,
-Name: Gena Age: 25 City:Rivne
