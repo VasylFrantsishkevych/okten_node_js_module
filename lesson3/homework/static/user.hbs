@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <style>
+        .wrap {
+            border: 2px solid cadetblue;
+            width: 20%;
+            margin: 0 auto;
+            padding: 10px;
+            font-size: 20px;
+        }
+        .wrap h3 {
+            text-align: center;
+        }
+        .wrap span {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrap">
+    <h3>{{user.firstName}}  {{user.lastName}}</h3>
+    <div>email: <span>{{user.email}}</span></div>
+    <div>password: <span>{{user.password}}</span></div>
+    <div>age: <span>{{user.age}}</span></div>
+    <div>city: <span>{{user.city}}</span></div>
+</div>
+
+</body>
+</html>

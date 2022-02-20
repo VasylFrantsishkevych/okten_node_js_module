@@ -1,6 +1,7 @@
 const express = require('express');
 const {engine} = require('express-handlebars');
 const path = require("path");
+const {use} = require("express/lib/router");
 
 const users = [
     // {firstName: 'Tolik', lastName: 'Petrocian', email: 'asad@sd.com', password: '58155', age: 20, city: 'Lviv'},
@@ -43,6 +44,18 @@ app.post('/sing', (req, res) => {
 // 2. /users просто сторінка з усіма юзерами, але можна по квері параметрам їх фільтрувати по age і city
 
 app.get('/users', (req, res) => {
+    const {query} = req;
+    if (Object.keys(query).length){
+        let userArr = [...users];
+        if (query.city) {
+            userArr = userArr.filter(user => user.city.toLowerCase() === query.city.toLowerCase());
+        }
+        if (query.age) {
+            userArr = userArr.filter(user => user.age === query.age);
+        }
+        res.render('users', {users: userArr});
+        return;
+    }
     res.render('users', {users});
 })
 
