@@ -1,0 +1,47 @@
+{
+  "name": "okten_node_js_module",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "nodemon app.ts",
+    "build": "rimraf dist && tsc-watch --onSuccess",
+    "lint": "eslint --cache --ext .js,.ts, src",
+    "lint:fix": "npm run lint -- --fix",
+
+    "typeorm": "node -r ts-node/register ./node_modules/typeorm/cli.js",
+    "migration:generate": "typeorm migration:create -n",
+    "migration:run": "npm run typeorm migration:run",
+    "migration:revert": "npm run typeorm migration:revert"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VasylFrantsishkevych/okten_node_js_module.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VasylFrantsishkevych/okten_node_js_module/issues"
+  },
+  "homepage": "https://github.com/VasylFrantsishkevych/okten_node_js_module#readme",
+  "dependencies": {
+    "express": "^4.17.3",
+    "mysql2": "^2.3.3",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.2.43"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/node": "^17.0.19",
+    "@typescript-eslint/eslint-plugin": "^5.12.1",
+    "@typescript-eslint/parser": "^5.12.1",
+    "eslint": "^8.9.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.4",
+    "nodemon": "^2.0.15",
+    "rimraf": "^3.0.2",
+    "ts-node": "^10.5.0",
+    "tsc-watch": "^4.6.0"
+  }
+}
