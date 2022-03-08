@@ -31,6 +31,39 @@ class CreateTablePosts1645650903744 {
                         isUnique: true,
                         isNullable: false,
                     },
+                    {
+                        name: 'text',
+                        type: 'varchar',
+                        width: 250,
+                        isNullable: false,
+                    },
+                    {
+                        name: 'userId',
+                        type: 'int',
+                    },
+                    {
+                        name: 'createdAt',
+                        type: 'timestamp',
+                        isNullable: false,
+                        default: 'now()',
+                    },
+                    {
+                        name: 'deleteAt',
+                        type: 'timestamp',
+                        isNullable: true,
+                    },
+                ],
+                foreignKeys: [
+                    {
+                        // яка колонка буде форенкійом
+                        columnNames: ['userId'],
+                        // на яку таблицю буде зсилатися
+                        referencedTableName: 'Users',
+                        // по якій колонці буде на неї зсилатися
+                        referencedColumnNames: ['id'],
+                        onDelete: 'CASCADE',
+                        onUpdate: 'CASCADE',
+                    },
                 ],
             }), true);
         });
