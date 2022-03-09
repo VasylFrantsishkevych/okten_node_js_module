@@ -3,10 +3,13 @@ import express, { Request, Response } from 'express';
 import { createConnection, getManager } from 'typeorm';
 
 import { User } from './entity/user';
+import { apiRouter } from './router/apiRouter';
 
 const app = express();
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(apiRouter);
 
 app.get('/users', async (req: Request, res: Response) => {
     const users = await getManager().getRepository(User).find({ relations: ['posts'] });
@@ -15,11 +18,6 @@ app.get('/users', async (req: Request, res: Response) => {
     // const users = await getManager().getRepository(User).findOne();
     // console.log(users);
     // res.json(users);
-});
-
-app.post('/users', async (req: Request, res: Response) => {
-    const createUser = await getManager().getRepository(User).save(req.body);
-    res.json(createUser);
 });
 
 app.put('/users/:id', async (req, res) => {

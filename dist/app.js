@@ -17,12 +17,33 @@ const express_1 = __importDefault(require("express"));
 const typeorm_1 = require("typeorm");
 const user_1 = require("./entity/user");
 const app = (0, express_1.default)();
-// app.use(express.json());
-// app.use(express.urlencoded());
+app.use(express_1.default.json());
+app.use(express_1.default.urlencoded());
 app.get('/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield (0, typeorm_1.getManager)().getRepository(user_1.User).find();
+    const users = yield (0, typeorm_1.getManager)().getRepository(user_1.User).find({ relations: ['posts'] });
     console.log(users);
     res.json(users);
+    // const users = await getManager().getRepository(User).findOne();
+    // console.log(users);
+    // res.json(users);
+}));
+app.post('/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const createUser = yield (0, typeorm_1.getManager)().getRepository(user_1.User).save(req.body);
+    res.json(createUser);
+}));
+app.put('/users/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { password, email } = req.body;
+    const createdUser = yield (0, typeorm_1.getManager)().getRepository(user_1.User)
+        .update({ id: Number(req.params.id) }, {
+        password,
+        email,
+    });
+    res.json(createdUser);
+}));
+app.delete('/users/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const deleteUser = yield (0, typeorm_1.getManager)().getRepository(user_1.User)
+        .delete({ id: Number(req.params.id) });
+    res.json(deleteUser);
 }));
 app.listen(5500, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log('Server has started!!!');
