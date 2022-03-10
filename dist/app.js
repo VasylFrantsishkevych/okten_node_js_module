@@ -16,21 +16,24 @@ require("reflect-metadata");
 const express_1 = __importDefault(require("express"));
 const typeorm_1 = require("typeorm");
 const user_1 = require("./entity/user");
+const apiRouter_1 = require("./router/apiRouter");
+const config_1 = require("./config/config");
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded());
-app.get('/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield (0, typeorm_1.getManager)().getRepository(user_1.User).find({ relations: ['posts'] });
-    console.log(users);
-    res.json(users);
-    // const users = await getManager().getRepository(User).findOne();
-    // console.log(users);
-    // res.json(users);
-}));
-app.post('/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const createUser = yield (0, typeorm_1.getManager)().getRepository(user_1.User).save(req.body);
-    res.json(createUser);
-}));
+app.use(apiRouter_1.apiRouter);
+// app.get('/users', async (req: Request, res: Response) => {
+//     const users = await getManager().getRepository(User).find({ relations: ['posts'] });
+//     console.log(users);
+//     res.json(users);
+// const users = await getManager().getRepository(User).findOne();
+// console.log(users);
+// res.json(users);
+// });
+// app.post('/users', async (req: Request, res: Response) => {
+//     const createUser = await getManager().getRepository(User).save(req.body);
+//     res.json(createUser);
+// });
 app.put('/users/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { password, email } = req.body;
     const createdUser = yield (0, typeorm_1.getManager)().getRepository(user_1.User)
@@ -45,8 +48,9 @@ app.delete('/users/:id', (req, res) => __awaiter(void 0, void 0, void 0, functio
         .delete({ id: Number(req.params.id) });
     res.json(deleteUser);
 }));
-app.listen(5500, () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('Server has started!!!');
+const { PORT } = config_1.config;
+app.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(`Server has started on port: ${PORT}`);
     try {
         const connection = yield (0, typeorm_1.createConnection)();
         if (connection) {

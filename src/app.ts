@@ -1,24 +1,30 @@
 import 'reflect-metadata';
-import express, { Request, Response } from 'express';
+import express from 'express';
 import { createConnection, getManager } from 'typeorm';
 
 import { User } from './entity/user';
 import { apiRouter } from './router/apiRouter';
+import { config } from './config/config';
 
 const app = express();
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded());
 
 app.use(apiRouter);
 
-app.get('/users', async (req: Request, res: Response) => {
-    const users = await getManager().getRepository(User).find({ relations: ['posts'] });
-    console.log(users);
-    res.json(users);
-    // const users = await getManager().getRepository(User).findOne();
-    // console.log(users);
-    // res.json(users);
-});
+// app.get('/users', async (req: Request, res: Response) => {
+//     const users = await getManager().getRepository(User).find({ relations: ['posts'] });
+//     console.log(users);
+//     res.json(users);
+// const users = await getManager().getRepository(User).findOne();
+// console.log(users);
+// res.json(users);
+// });
+
+// app.post('/users', async (req: Request, res: Response) => {
+//     const createUser = await getManager().getRepository(User).save(req.body);
+//     res.json(createUser);
+// });
 
 app.put('/users/:id', async (req, res) => {
     const { password, email } = req.body;
@@ -36,8 +42,10 @@ app.delete('/users/:id', async (req, res) => {
     res.json(deleteUser);
 });
 
-app.listen(5500, async () => {
-    console.log('Server has started!!!');
+const { PORT } = config;
+
+app.listen(PORT, async () => {
+    console.log(`Server has started on port: ${PORT}`);
     try {
         const connection = await createConnection();
         if (connection) {
