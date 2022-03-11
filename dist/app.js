@@ -20,7 +20,7 @@ const apiRouter_1 = require("./router/apiRouter");
 const config_1 = require("./config/config");
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
-app.use(express_1.default.urlencoded());
+app.use(express_1.default.urlencoded({ extended: true }));
 app.use(apiRouter_1.apiRouter);
 // app.get('/users', async (req: Request, res: Response) => {
 //     const users = await getManager().getRepository(User).find({ relations: ['posts'] });

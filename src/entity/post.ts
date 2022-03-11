@@ -2,16 +2,17 @@ import {
     Column, Entity, JoinColumn, ManyToOne,
 } from 'typeorm';
 
-import { CommonFields } from './commonFields';
+import { CommonFields, ICommonFields } from './commonFields';
 import { User } from './user';
+import { config } from '../config/config';
 
-export interface IPost {
+export interface IPost extends ICommonFields{
     title: string;
     text: string;
     userId: number;
 }
 
-@Entity('posts', { database: 'okten_test_db' })
+@Entity('posts', { database: config.MYSQL_DATABASE_NAME })
 export class Post extends CommonFields implements IPost {
     @Column({
         type: 'varchar',

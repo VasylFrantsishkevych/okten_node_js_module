@@ -2,15 +2,16 @@ import {
     Column, Entity, JoinColumn, OneToOne,
 } from 'typeorm';
 
-import { CommonFields } from './commonFields';
+import { CommonFields, ICommonFields } from './commonFields';
 import { User } from './user';
+import { config } from '../config/config';
 
-export interface IToken {
+export interface IToken extends ICommonFields {
     refreshToken: string;
     userId: number;
 }
 
-@Entity('tokens', { database: 'okten_test_db' })
+@Entity('tokens', { database: config.MYSQL_DATABASE_NAME })
 export class Token extends CommonFields implements IToken {
     @Column({
         type: 'varchar',

@@ -1,20 +1,20 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 
-import { CommonFields } from './commonFields';
-import { Post } from './post';
+import { CommonFields, ICommonFields } from './commonFields';
+import { IPost, Post } from './post';
+import { config } from '../config/config';
 
-export interface IUser {
-    id: number;
+export interface IUser extends ICommonFields {
     firstName: string;
     lastName: string;
     age?: number;
     phone: string;
     email: string;
     password: string;
-    posts: any[];
+    posts: IPost[];
 }
 
-@Entity('users', { database: 'okten_test_db' })
+@Entity('users', { database: config.MYSQL_DATABASE_NAME })
 export class User extends CommonFields implements IUser {
     @Column({
         type: 'varchar',
