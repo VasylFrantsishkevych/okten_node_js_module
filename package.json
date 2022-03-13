@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:dev": "nodemon app.ts",
+    "start": "nodemon app.ts",
     "build": "rimraf dist && tsc-watch --onSuccess",
     "lint": "eslint --cache --ext .js,.ts, src",
     "lint:fix": "npm run lint -- --fix",
