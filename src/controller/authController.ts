@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 
-import { authService, tokenService } from '../services';
+import { authService, tokenService, userService } from '../services';
 import { IRequestExtended, ITokenData } from '../interfaces';
 import { COOKIE } from '../constants/cookie';
 import { IUser } from '../entity/user';
+import { tokenRepository } from '../repositories';
 
 class AuthController {
     public async registration(req: Request, res: Response): Promise<Response<ITokenData>> {
@@ -20,11 +21,32 @@ class AuthController {
     public async logout(req: IRequestExtended, res: Response): Promise<Response<string>> {
         const { id } = req.user as IUser;
 
-        res.clearCookie(COOKIE.nameRefreshToken);
-
         await tokenService.deleteUserTokenPair(id);
 
         return res.json('Ok');
+    }
+
+    // Створюємо два токена юзеру який залогувався та зберігаємо їх в базу
+    public async login(req: IRequestExtended, res: Response) {
+        try {
+            const { id, email, password: hashPassword } = req.user as IUser;
+            const { password } = req.body;
+
+            await userService.compareUserPassword(password, hashPassword);
+
+            const tokenPair = tokenService.generateTokenPair({ userId: id, userEmail: email });
+
+            const { refreshToken, accessToken } = tokenPair;
+
+            await tokenRepository.createToken({ refreshToken, accessToken, userId: id });
+
+            res.json({
+                ...tokenPair,
+                user: req.user,
+            });
+        } catch (e) {
+            res.status(400).json(e);
+        }
     }
 }
 

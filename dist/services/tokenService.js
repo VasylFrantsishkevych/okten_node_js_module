@@ -37,6 +37,19 @@ class TokenService {
             return tokenRepositiry_1.tokenRepository.createToken({ refreshToken, userId });
         });
     }
+    deleteUserTokenPair(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return tokenRepositiry_1.tokenRepository.deleteByParams({ userId });
+        });
+    }
+    // Розшифровуємо токен та отримаємо зашифровані дані
+    verifyToken(authToken, tokenType = 'access') {
+        let secretWord = config_1.config.SECRET_ACCESS_KEY;
+        if (tokenType === 'refresh') {
+            secretWord = config_1.config.SECRET_REFRESH_KEY;
+        }
+        return jsonwebtoken_1.default.verify(authToken, secretWord);
+    }
 }
 exports.tokenService = new TokenService();
 //# sourceMappingURL=tokenService.js.map

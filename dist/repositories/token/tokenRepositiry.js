@@ -29,6 +29,11 @@ let TokenRepository = class TokenRepository extends typeorm_1.Repository {
             return (0, typeorm_1.getManager)().getRepository(token_1.Token).findOne({ userId });
         });
     }
+    deleteByParams(findObject) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return (0, typeorm_1.getManager)().getRepository(token_1.Token).delete(findObject);
+        });
+    }
 };
 TokenRepository = __decorate([
     (0, typeorm_1.EntityRepository)(token_1.Token)

@@ -35,9 +35,6 @@ class UserService {
             return userRepository_1.userRepository.getAllUsers();
         });
     }
-    // public async updateUser(id: number, password: string, email: string): Promise<IUser> {
-    //     return userRepository.updateUser(id, password, email);
-    // }
     _hashPassword(password) {
         return __awaiter(this, void 0, void 0, function* () {
             return bcrypt_1.default.hash(password, Number(config_1.config.USER_SALT_ROUNDS));

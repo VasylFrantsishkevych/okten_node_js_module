@@ -2,24 +2,31 @@ import { NextFunction, Response } from 'express';
 
 import { tokenService, userService } from '../services';
 import { IRequestExtended } from '../interfaces';
+import { tokenRepository } from '../repositories';
 
 class AuthMiddleware {
     // З header authorization дістаємо токен та розшифровуємо токен. Він вертає нам або помилку або
     // проверифікується і повернуться дані які зашифрували.
     public async checkAccessToken(req: IRequestExtended, res: Response, next: NextFunction) {
         try {
-            const authToken = req.get('Authorization');
-            if (!authToken) {
+            const accessToken = req.get('Authorization');
+            if (!accessToken) {
                 throw new Error('No token');
             }
             // Розшифровуємо юзера
-            const { userEmail } = tokenService.verifyToken(authToken);
+            const { userEmail } = tokenService.verifyToken(accessToken);
+
+            const tokenPairFromDB = await tokenRepository.findByParams({ accessToken });
+
+            if (!tokenPairFromDB) {
+                throw new Error('Token not valid');
+            }
 
             // Шукаємо юзера по емейлу
             const userFromToken = await userService.getUserByEmail(userEmail);
 
             if (!userFromToken) {
-                throw new Error('Wrong token');
+                throw new Error('Token not valid');
             }
 
             // Розширили request додавши юзера з

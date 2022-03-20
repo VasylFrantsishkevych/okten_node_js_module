@@ -20,6 +20,14 @@ class AuthController {
             return res.json(data);
         });
     }
+    logout(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.user;
+            res.clearCookie(cookie_1.COOKIE.nameRefreshToken);
+            yield services_1.tokenService.deleteUserTokenPair(id);
+            return res.json('Ok');
+        });
+    }
 }
 exports.authController = new AuthController();
 //# sourceMappingURL=authController.js.map

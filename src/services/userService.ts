@@ -22,6 +22,14 @@ class UserService {
         return userRepository.getAllUsers();
     }
 
+    public async compareUserPassword(password: string, hash: string): Promise<void | Error> {
+        const isPasswordUnique = await bcrypt.compare(password, hash);
+
+        if (!isPasswordUnique) {
+            throw new Error('User not exists');
+        }
+    }
+
     private async _hashPassword(password: string): Promise<string> {
         return bcrypt.hash(password, Number(config.USER_SALT_ROUNDS));
     }
