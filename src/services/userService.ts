@@ -22,10 +22,6 @@ class UserService {
         return userRepository.getAllUsers();
     }
 
-    // public async updateUser(id: number, password: string, email: string): Promise<IUser> {
-    //     return userRepository.updateUser(id, password, email);
-    // }
-
     private async _hashPassword(password: string): Promise<string> {
         return bcrypt.hash(password, Number(config.USER_SALT_ROUNDS));
     }
