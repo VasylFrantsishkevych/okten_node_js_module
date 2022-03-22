@@ -24,6 +24,9 @@ let TokenRepository = class TokenRepository extends typeorm_1.Repository {
             return (0, typeorm_1.getManager)().getRepository(token_1.Token).save(token);
         });
     }
+    findByParams(filterObject) {
+        return (0, typeorm_1.getManager)().getRepository(token_1.Token).findOne(filterObject);
+    }
     findTokenByUserId(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             return (0, typeorm_1.getManager)().getRepository(token_1.Token).findOne({ userId });

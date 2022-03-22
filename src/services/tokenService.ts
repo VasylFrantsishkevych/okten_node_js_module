@@ -39,6 +39,10 @@ class TokenService {
         return tokenRepository.deleteByParams({ userId });
     }
 
+    async deleteTokenPairByParams(searchObject: Partial<IToken>) {
+        return tokenRepository.deleteByParams(searchObject);
+    }
+
     // Розшифровуємо токен та отримаємо зашифровані дані
     verifyToken(authToken: string, tokenType = 'access'): IUserPayload {
         let secretWord = config.SECRET_ACCESS_KEY;

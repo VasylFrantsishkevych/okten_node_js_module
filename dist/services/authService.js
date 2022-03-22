@@ -28,7 +28,7 @@ class AuthService {
         return __awaiter(this, void 0, void 0, function* () {
             const { id, email } = userData;
             const tokensPair = yield tokenService_1.tokenService.generateTokenPair({ userId: id, userEmail: email });
-            yield tokenService_1.tokenService.saveToken(id, tokensPair.refreshToken);
+            yield tokenService_1.tokenService.saveToken(id, tokensPair.refreshToken, tokensPair.accessToken);
             return Object.assign(Object.assign({}, tokensPair), { userId: id, userEmail: email });
         });
     }

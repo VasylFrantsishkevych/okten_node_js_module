@@ -26,12 +26,20 @@ __decorate([
 ], Token.prototype, "refreshToken", void 0);
 __decorate([
     (0, typeorm_1.Column)({
+        type: 'varchar',
+        width: 250,
+        nullable: false,
+    }),
+    __metadata("design:type", String)
+], Token.prototype, "accessToken", void 0);
+__decorate([
+    (0, typeorm_1.Column)({
         type: 'int',
     }),
     __metadata("design:type", Number)
 ], Token.prototype, "userId", void 0);
 __decorate([
-    (0, typeorm_1.OneToOne)(() => user_1.User),
+    (0, typeorm_1.ManyToOne)(() => user_1.User),
     (0, typeorm_1.JoinColumn)({ name: 'userId' }),
     __metadata("design:type", user_1.User)
 ], Token.prototype, "user", void 0);

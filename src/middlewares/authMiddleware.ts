@@ -3,13 +3,14 @@ import { NextFunction, Response } from 'express';
 import { tokenService, userService } from '../services';
 import { IRequestExtended } from '../interfaces';
 import { tokenRepository } from '../repositories';
+import { constants } from '../constants';
 
 class AuthMiddleware {
     // З header authorization дістаємо токен та розшифровуємо токен. Він вертає нам або помилку або
     // проверифікується і повернуться дані які зашифрували.
     public async checkAccessToken(req: IRequestExtended, res: Response, next: NextFunction) {
         try {
-            const accessToken = req.get('Authorization');
+            const accessToken = req.get(constants.AUTHORIZATION);
             if (!accessToken) {
                 throw new Error('No token');
             }
@@ -34,10 +35,47 @@ class AuthMiddleware {
 
             next();
         } catch (e: any) {
-            res.json({
-                status: 400,
-                message: e.message,
-            });
+            res.status(401)
+                .json({
+                    status: 401,
+                    message: e.message,
+                });
+        }
+    }
+
+    public async checkRefreshToken(req: IRequestExtended, res: Response, next: NextFunction) {
+        try {
+            // беремо токен з header
+            const refreshToken = req.get(constants.AUTHORIZATION);
+            // Перевіряємо чи є токен в базі
+            if (!refreshToken) {
+                throw new Error('No token');
+            }
+            // Розшифровуємо юзера
+            const { userEmail } = tokenService.verifyToken(refreshToken, 'refresh');
+            // Шукаємо refreshToken токен в базі
+            const tokenPairFromDB = await tokenRepository.findByParams({ refreshToken });
+
+            if (!tokenPairFromDB) {
+                throw new Error('Token not valid');
+            }
+            // Шукаємо юзера по емейлу
+            const userFromToken = await userService.getUserByEmail(userEmail);
+
+            if (!userFromToken) {
+                throw new Error('Token not valid');
+            }
+
+            // Розширили request додавши юзера з
+            req.user = userFromToken;
+
+            next();
+        } catch (e: any) {
+            res.status(401)
+                .json({
+                    status: 401,
+                    message: e.message,
+                });
         }
     }
 }

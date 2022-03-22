@@ -35,6 +35,14 @@ class UserService {
             return userRepository_1.userRepository.getAllUsers();
         });
     }
+    compareUserPassword(password, hash) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const isPasswordUnique = yield bcrypt_1.default.compare(password, hash);
+            if (!isPasswordUnique) {
+                throw new Error('User not exists');
+            }
+        });
+    }
     _hashPassword(password) {
         return __awaiter(this, void 0, void 0, function* () {
             return bcrypt_1.default.hash(password, Number(config_1.config.USER_SALT_ROUNDS));

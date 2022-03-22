@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authController = void 0;
 const services_1 = require("../services");
 const cookie_1 = require("../constants/cookie");
+const repositories_1 = require("../repositories");
 class AuthController {
     registration(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -23,9 +24,52 @@ class AuthController {
     logout(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = req.user;
-            res.clearCookie(cookie_1.COOKIE.nameRefreshToken);
             yield services_1.tokenService.deleteUserTokenPair(id);
             return res.json('Ok');
+        });
+    }
+    // Створюємо два токена юзеру який залогувався та зберігаємо їх в базу
+    login(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id, email, password: hashPassword } = req.user;
+                const { password } = req.body;
+                yield services_1.userService.compareUserPassword(password, hashPassword);
+                const tokenPair = services_1.tokenService.generateTokenPair({ userId: id, userEmail: email });
+                const { refreshToken, accessToken } = tokenPair;
+                yield repositories_1.tokenRepository.createToken({ refreshToken, accessToken, userId: id });
+                res.json({
+                    refreshToken,
+                    accessToken,
+                    user: req.user,
+                });
+            }
+            catch (e) {
+                res.status(400).json(e);
+            }
+        });
+    }
+    refreshToken(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id, email } = req.user;
+                // Беремо refreshToken з хедера
+                const refreshTokenToDelete = req.get('Authorization');
+                // Стираємо стару пару токенів по refreshToken
+                yield services_1.tokenService.deleteTokenPairByParams({ refreshToken: refreshTokenToDelete });
+                // Генеруємо нову пару токенів
+                const { accessToken, refreshToken } = yield services_1.tokenService.generateTokenPair({ userId: id, userEmail: email });
+                // Записуємо нову пару токенів в базу
+                yield repositories_1.tokenRepository.createToken({ refreshToken, accessToken, userId: id });
+                res.json({
+                    refreshToken,
+                    accessToken,
+                    user: req.user,
+                });
+            }
+            catch (e) {
+                res.status(400).json(e);
+            }
         });
     }
 }

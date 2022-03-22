@@ -41,7 +41,30 @@ class AuthController {
             await tokenRepository.createToken({ refreshToken, accessToken, userId: id });
 
             res.json({
-                ...tokenPair,
+                refreshToken,
+                accessToken,
+                user: req.user,
+            });
+        } catch (e) {
+            res.status(400).json(e);
+        }
+    }
+
+    public async refreshToken(req: IRequestExtended, res: Response) {
+        try {
+            const { id, email } = req.user as IUser;
+            // Беремо refreshToken з хедера
+            const refreshTokenToDelete = req.get('Authorization');
+            // Стираємо стару пару токенів по refreshToken
+            await tokenService.deleteTokenPairByParams({ refreshToken: refreshTokenToDelete });
+            // Генеруємо нову пару токенів
+            const { accessToken, refreshToken } = await tokenService.generateTokenPair({ userId: id, userEmail: email });
+            // Записуємо нову пару токенів в базу
+            await tokenRepository.createToken({ refreshToken, accessToken, userId: id });
+
+            res.json({
+                refreshToken,
+                accessToken,
                 user: req.user,
             });
         } catch (e) {

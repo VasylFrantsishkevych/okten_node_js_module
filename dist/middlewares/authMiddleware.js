@@ -11,22 +11,60 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authMiddleware = void 0;
 const services_1 = require("../services");
+const repositories_1 = require("../repositories");
 class AuthMiddleware {
     // З header authorization дістаємо токен та розшифровуємо токен. Він вертає нам або помилку або
     // проверифікується і повернуться дані які зашифрували.
     checkAccessToken(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const authToken = req.get('Authorization');
-                if (!authToken) {
+                const accessToken = req.get('Authorization');
+                if (!accessToken) {
                     throw new Error('No token');
                 }
                 // Розшифровуємо юзера
-                const { userEmail } = services_1.tokenService.verifyToken(authToken);
+                const { userEmail } = services_1.tokenService.verifyToken(accessToken);
+                const tokenPairFromDB = yield repositories_1.tokenRepository.findByParams({ accessToken });
+                if (!tokenPairFromDB) {
+                    throw new Error('Token not valid');
+                }
                 // Шукаємо юзера по емейлу
                 const userFromToken = yield services_1.userService.getUserByEmail(userEmail);
                 if (!userFromToken) {
-                    throw new Error('Wrong token');
+                    throw new Error('Token not valid');
+                }
+                // Розширили request додавши юзера з
+                req.user = userFromToken;
+                next();
+            }
+            catch (e) {
+                res.json({
+                    status: 400,
+                    message: e.message,
+                });
+            }
+        });
+    }
+    checkRefreshToken(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                // беремо токен з header
+                const refreshToken = req.get('Authorization');
+                // Перевіряємо чи є токен в базі
+                if (!refreshToken) {
+                    throw new Error('No token');
+                }
+                // Розшифровуємо юзера
+                const { userEmail } = services_1.tokenService.verifyToken(refreshToken, 'refresh');
+                // Шукаємо refreshToken токен в базі
+                const tokenPairFromDB = yield repositories_1.tokenRepository.findByParams({ refreshToken });
+                if (!tokenPairFromDB) {
+                    throw new Error('Token not valid');
+                }
+                // Шукаємо юзера по емейлу
+                const userFromToken = yield services_1.userService.getUserByEmail(userEmail);
+                if (!userFromToken) {
+                    throw new Error('Token not valid');
                 }
                 // Розширили request додавши юзера з
                 req.user = userFromToken;

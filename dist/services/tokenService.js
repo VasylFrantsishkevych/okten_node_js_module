@@ -15,31 +15,35 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.tokenService = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = require("../config/config");
-const tokenRepositiry_1 = require("../repositories/token/tokenRepositiry");
+const repositories_1 = require("../repositories");
 class TokenService {
     generateTokenPair(payload) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const accessToken = jsonwebtoken_1.default.sign(payload, config_1.config.SECRET_ACCESS_KEY, { expiresIn: '15m' });
-            const refreshToken = jsonwebtoken_1.default.sign(payload, config_1.config.SECRET_REFRESH_KEY, { expiresIn: '1d' });
-            return {
-                accessToken,
-                refreshToken,
-            };
-        });
+        const accessToken = jsonwebtoken_1.default.sign(payload, config_1.config.SECRET_ACCESS_KEY, { expiresIn: config_1.config.EXPIRES_IN_ACCESS });
+        const refreshToken = jsonwebtoken_1.default.sign(payload, config_1.config.SECRET_REFRESH_KEY, { expiresIn: config_1.config.EXPIRES_IN_REFRESH });
+        return {
+            accessToken,
+            refreshToken,
+        };
     }
-    saveToken(userId, refreshToken) {
+    saveToken(userId, refreshToken, accessToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            const tokenFromDb = yield tokenRepositiry_1.tokenRepository.findTokenByUserId(userId);
+            const tokenFromDb = yield repositories_1.tokenRepository.findTokenByUserId(userId);
             if (tokenFromDb) {
                 tokenFromDb.refreshToken = refreshToken;
-                return tokenRepositiry_1.tokenRepository.createToken(tokenFromDb);
+                tokenFromDb.accessToken = accessToken;
+                return repositories_1.tokenRepository.createToken(tokenFromDb);
             }
-            return tokenRepositiry_1.tokenRepository.createToken({ refreshToken, userId });
+            return repositories_1.tokenRepository.createToken({ accessToken, refreshToken, userId });
         });
     }
     deleteUserTokenPair(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return tokenRepositiry_1.tokenRepository.deleteByParams({ userId });
+            return repositories_1.tokenRepository.deleteByParams({ userId });
+        });
+    }
+    deleteTokenPairByParams(searchObject) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return repositories_1.tokenRepository.deleteByParams(searchObject);
         });
     }
     // Розшифровуємо токен та отримаємо зашифровані дані
