@@ -4,6 +4,7 @@ import { tokenService, userService } from '../services';
 import { IRequestExtended } from '../interfaces';
 import { tokenRepository } from '../repositories';
 import { constants } from '../constants';
+import { userValidators } from '../validators';
 
 class AuthMiddleware {
     // З header authorization дістаємо токен та розшифровуємо токен. Він вертає нам або помилку або
@@ -76,6 +77,36 @@ class AuthMiddleware {
                     status: 401,
                     message: e.message,
                 });
+        }
+    }
+
+    async validatorRegistration(req: IRequestExtended, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const { error, value } = userValidators.registration.validate(req.body);
+
+            if (error) {
+                throw new Error(error.details[0].message);
+            }
+
+            req.body = value;
+            next();
+        } catch (e: any) {
+            res.status(400).json(e.message);
+        }
+    }
+
+    async validatorLogin(req: IRequestExtended, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const { error, value } = userValidators.login.validate(req.body);
+
+            if (error) {
+                throw new Error('Wrong password or email');
+            }
+
+            req.body = value;
+            next();
+        } catch (e: any) {
+            res.status(400).json(e.message);
         }
     }
 }

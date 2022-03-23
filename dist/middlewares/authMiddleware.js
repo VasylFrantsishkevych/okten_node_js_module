@@ -12,13 +12,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authMiddleware = void 0;
 const services_1 = require("../services");
 const repositories_1 = require("../repositories");
+const constants_1 = require("../constants");
+const validators_1 = require("../validators");
 class AuthMiddleware {
     // З header authorization дістаємо токен та розшифровуємо токен. Він вертає нам або помилку або
     // проверифікується і повернуться дані які зашифрували.
     checkAccessToken(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const accessToken = req.get('Authorization');
+                const accessToken = req.get(constants_1.constants.AUTHORIZATION);
                 if (!accessToken) {
                     throw new Error('No token');
                 }
@@ -38,8 +40,9 @@ class AuthMiddleware {
                 next();
             }
             catch (e) {
-                res.json({
-                    status: 400,
+                res.status(401)
+                    .json({
+                    status: 401,
                     message: e.message,
                 });
             }
@@ -49,7 +52,7 @@ class AuthMiddleware {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 // беремо токен з header
-                const refreshToken = req.get('Authorization');
+                const refreshToken = req.get(constants_1.constants.AUTHORIZATION);
                 // Перевіряємо чи є токен в базі
                 if (!refreshToken) {
                     throw new Error('No token');
@@ -71,10 +74,41 @@ class AuthMiddleware {
                 next();
             }
             catch (e) {
-                res.json({
-                    status: 400,
+                res.status(401)
+                    .json({
+                    status: 401,
                     message: e.message,
                 });
+            }
+        });
+    }
+    validatorRegistration(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { error, value } = validators_1.userValidators.registration.validate(req.body);
+                if (error) {
+                    throw new Error(error.details[0].message);
+                }
+                req.body = value;
+                next();
+            }
+            catch (e) {
+                res.status(400).json(e.message);
+            }
+        });
+    }
+    validatorLogin(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { error, value } = validators_1.userValidators.registration.validate(req.body);
+                if (error) {
+                    throw new Error('Wrong password or email');
+                }
+                req.body = value;
+                next();
+            }
+            catch (e) {
+                res.status(400).json(e.message);
             }
         });
     }
