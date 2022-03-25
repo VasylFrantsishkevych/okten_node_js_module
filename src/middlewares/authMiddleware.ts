@@ -4,7 +4,8 @@ import { tokenService, userService } from '../services';
 import { IRequestExtended } from '../interfaces';
 import { tokenRepository } from '../repositories';
 import { constants } from '../constants';
-import { userValidators } from '../validators';
+import { authValidators } from '../validators';
+import { ErrorHandler } from '../error/ErrorHandler';
 
 class AuthMiddleware {
     // З header authorization дістаємо токен та розшифровуємо токен. Він вертає нам або помилку або
@@ -13,7 +14,8 @@ class AuthMiddleware {
         try {
             const accessToken = req.get(constants.AUTHORIZATION);
             if (!accessToken) {
-                throw new Error('No token');
+                next(new ErrorHandler('No token', 401));
+                return;
             }
             // Розшифровуємо юзера
             const { userEmail } = tokenService.verifyToken(accessToken);
@@ -21,14 +23,16 @@ class AuthMiddleware {
             const tokenPairFromDB = await tokenRepository.findByParams({ accessToken });
 
             if (!tokenPairFromDB) {
-                throw new Error('Token not valid');
+                next(new ErrorHandler('Token not valid', 401));
+                return;
             }
 
             // Шукаємо юзера по емейлу
             const userFromToken = await userService.getUserByEmail(userEmail);
 
             if (!userFromToken) {
-                throw new Error('Token not valid');
+                next(new ErrorHandler('Token not valid', 401));
+                return;
             }
 
             // Розширили request додавши юзера з
@@ -36,11 +40,7 @@ class AuthMiddleware {
 
             next();
         } catch (e: any) {
-            res.status(401)
-                .json({
-                    status: 401,
-                    message: e.message,
-                });
+            next(e);
         }
     }
 
@@ -50,7 +50,8 @@ class AuthMiddleware {
             const refreshToken = req.get(constants.AUTHORIZATION);
             // Перевіряємо чи є токен в базі
             if (!refreshToken) {
-                throw new Error('No token');
+                next(new ErrorHandler('No token', 401));
+                return;
             }
             // Розшифровуємо юзера
             const { userEmail } = tokenService.verifyToken(refreshToken, 'refresh');
@@ -58,13 +59,15 @@ class AuthMiddleware {
             const tokenPairFromDB = await tokenRepository.findByParams({ refreshToken });
 
             if (!tokenPairFromDB) {
-                throw new Error('Token not valid');
+                next(new ErrorHandler('Token not valid', 401));
+                return;
             }
             // Шукаємо юзера по емейлу
             const userFromToken = await userService.getUserByEmail(userEmail);
 
             if (!userFromToken) {
-                throw new Error('Token not valid');
+                next(new ErrorHandler('Token not valid', 401));
+                return;
             }
 
             // Розширили request додавши юзера з
@@ -72,41 +75,38 @@ class AuthMiddleware {
 
             next();
         } catch (e: any) {
-            res.status(401)
-                .json({
-                    status: 401,
-                    message: e.message,
-                });
+            next(e);
         }
     }
 
     async validatorRegistration(req: IRequestExtended, res: Response, next: NextFunction): Promise<void> {
         try {
-            const { error, value } = userValidators.registration.validate(req.body);
+            const { error, value } = authValidators.registration.validate(req.body);
 
             if (error) {
-                throw new Error(error.details[0].message);
+                next(new ErrorHandler(error.details[0].message, 400));
+                return;
             }
 
             req.body = value;
             next();
         } catch (e: any) {
-            res.status(400).json(e.message);
+            next(e);
         }
     }
 
     async validatorLogin(req: IRequestExtended, res: Response, next: NextFunction): Promise<void> {
         try {
-            const { error, value } = userValidators.login.validate(req.body);
+            const { error, value } = authValidators.login.validate(req.body);
 
             if (error) {
-                throw new Error('Wrong password or email');
+                next(new ErrorHandler('Wrong password or email', 400));
             }
 
             req.body = value;
             next();
         } catch (e: any) {
-            res.status(400).json(e.message);
+            next(e);
         }
     }
 }

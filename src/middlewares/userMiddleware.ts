@@ -2,6 +2,7 @@ import { NextFunction, Response } from 'express';
 
 import { IRequestExtended } from '../interfaces';
 import { userRepository } from '../repositories';
+import { ErrorHandler } from '../error/ErrorHandler';
 
 class UserMiddleware {
     // Перевіряє по емейлу чи є юзер в DB. Якщо є такий юзер то передаємо його дальше,
@@ -12,14 +13,14 @@ class UserMiddleware {
             const userFromDB = await userRepository.getUserByEmail(email);
 
             if (!userFromDB) {
-                res.status(404).json('User not found');
+                next(new ErrorHandler('User not found', 404));
                 return;
             }
 
             req.user = userFromDB;
             next();
         } catch (e) {
-            res.status(400).json(e);
+            next(e);
         }
     }
 }

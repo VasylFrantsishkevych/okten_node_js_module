@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 
 import { authService, tokenService, userService } from '../services';
 import { IRequestExtended, ITokenData } from '../interfaces';
-import { COOKIE } from '../constants/cookie';
+import { COOKIE, constants } from '../constants';
 import { IUser } from '../entity/user';
 import { tokenRepository } from '../repositories';
 
@@ -54,7 +54,7 @@ class AuthController {
         try {
             const { id, email } = req.user as IUser;
             // Беремо refreshToken з хедера
-            const refreshTokenToDelete = req.get('Authorization');
+            const refreshTokenToDelete = req.get(constants.AUTHORIZATION);
             // Стираємо стару пару токенів по refreshToken
             await tokenService.deleteTokenPairByParams({ refreshToken: refreshTokenToDelete });
             // Генеруємо нову пару токенів

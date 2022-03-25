@@ -100,7 +100,7 @@ class AuthMiddleware {
     validatorLogin(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { error, value } = validators_1.userValidators.registration.validate(req.body);
+                const { error, value } = validators_1.userValidators.login.validate(req.body);
                 if (error) {
                     throw new Error('Wrong password or email');
                 }
