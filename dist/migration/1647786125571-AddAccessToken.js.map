@@ -1,1 +1,0 @@
-{"version":3,"file":"1647786125571-AddAccessToken.js","sourceRoot":"","sources":["../../src/migration/1647786125571-AddAccessToken.ts"],"names":[],"mappings":";;;;;;;;;;;;AAEA,MAAa,2BAA2B;IACvB,EAAE,CAAC,WAAwB;;YACpC,MAAM,WAAW,CAAC,KAAK,CAAC,iEAAiE,CAAC,CAAC;QAC/F,CAAC;KAAA;IAEY,IAAI,CAAC,WAAwB;;YACtC,MAAM,WAAW,CAAC,KAAK,CAAC,4CAA4C,CAAC,CAAC;QAC1E,CAAC;KAAA;CACJ;AARD,kEAQC"}
