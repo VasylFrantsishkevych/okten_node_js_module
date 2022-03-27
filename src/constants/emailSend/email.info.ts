@@ -1,4 +1,4 @@
-import { emailActionEnum } from './enums';
+import { emailActionEnum } from '../enums';
 
 export const emailInfo = {
     [emailActionEnum.WELCOME]: {

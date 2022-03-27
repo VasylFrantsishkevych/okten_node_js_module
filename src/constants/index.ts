@@ -1,5 +1,5 @@
 export * from './constants';
 export * from './cookie';
 export * from './enums';
-export * from './email.info';
+export * from './emailSend';
 export * from './regexes';
