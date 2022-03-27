@@ -26,8 +26,12 @@
         ],
         "max-len": ["error", {"code": 140}],
         "class-methods-use-this": "off",
-        "no-unused-vars": ["error", { "args": "none" }],
-        "no-underscore-dangle": "off"
+        "no-unused-vars": ["error", {
+            "args": "none",
+            "varsIgnorePattern": "^[A-Z]"
+        }],
+        "no-underscore-dangle": "off",
+        "no-shadow": "off"
     },
     "settings": {
         "import/resolver": {

@@ -1,8 +1,10 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
-import { authService, tokenService, userService } from '../services';
+import {
+    authService, emailService, tokenService, userService,
+} from '../services';
 import { IRequestExtended, ITokenData } from '../interfaces';
-import { COOKIE, constants } from '../constants';
+import { constants, COOKIE, emailActionEnum } from '../constants';
 import { IUser } from '../entity/user';
 import { tokenRepository } from '../repositories';
 
@@ -27,15 +29,15 @@ class AuthController {
     }
 
     // Створюємо два токена юзеру який залогувався та зберігаємо їх в базу
-    public async login(req: IRequestExtended, res: Response) {
+    public async login(req: IRequestExtended, res: Response, next: NextFunction) {
         try {
             const { id, email, password: hashPassword } = req.user as IUser;
             const { password } = req.body;
 
+            await emailService.sendMail(email, emailActionEnum.ACCOUNT_BLOCKED);
             await userService.compareUserPassword(password, hashPassword);
 
             const tokenPair = tokenService.generateTokenPair({ userId: id, userEmail: email });
-
             const { refreshToken, accessToken } = tokenPair;
 
             await tokenRepository.createToken({ refreshToken, accessToken, userId: id });
@@ -46,7 +48,7 @@ class AuthController {
                 user: req.user,
             });
         } catch (e) {
-            res.status(400).json(e);
+            next(e);
         }
     }
 
