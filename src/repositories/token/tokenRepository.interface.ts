@@ -1,4 +1,4 @@
-import { IToken } from '../../entity/token';
+import { IToken } from '../../entity/token.entity';
 import { ITokenDataToSave } from '../../interfaces/token.interface';
 
 export interface ITokenRepository {

@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 
 import { userRepository } from '../repositories/user/userRepository';
-import { IUser } from '../entity/user';
+import { IUser } from '../entity/user.entity';
 import { config } from '../config/config';
 
 class UserService {

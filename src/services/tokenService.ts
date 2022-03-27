@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 import { config } from '../config/config';
-import { IToken } from '../entity/token';
+import { IToken } from '../entity/token.entity';
 import { tokenRepository } from '../repositories/token/tokenRepositiry';
 import { ITokenPair, IUserPayload } from '../interfaces/token.interface';
 

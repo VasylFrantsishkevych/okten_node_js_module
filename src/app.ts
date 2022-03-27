@@ -2,9 +2,9 @@ import 'reflect-metadata';
 import express from 'express';
 import { createConnection, getManager } from 'typeorm';
 
-import { User } from './entity/user';
 import { apiRouter } from './router/apiRouter';
 import { config } from './config/config';
+import { User } from './entity/user.entity';
 
 const app = express();
 
@@ -14,16 +14,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(apiRouter);
 
 // app.get('/users', async (req: Request, res: Response) => {
-//     const users = await getManager().getRepository(User).find({ relations: ['posts'] });
+//     const users = await getManager().getRepository(UserEntity).find({ relations: ['posts'] });
 //     console.log(users);
 //     res.json(users);
-// const users = await getManager().getRepository(User).findOne();
+// const users = await getManager().getRepository(UserEntity).findOne();
 // console.log(users);
 // res.json(users);
 // });
 
 // app.post('/users', async (req: Request, res: Response) => {
-//     const createUser = await getManager().getRepository(User).save(req.body);
+//     const createUser = await getManager().getRepository(UserEntity).save(req.body);
 //     res.json(createUser);
 // });
 

@@ -1,16 +1,16 @@
 import { EntityRepository, getManager, Repository } from 'typeorm';
 
-import { IUser, User } from '../../entity/user';
+import { IUser, UserEntity } from '../../entity/user.entity';
 import { IUserRepository } from './userRepository.interface';
 
-@EntityRepository(User)
-class UserRepository extends Repository<User> implements IUserRepository {
+@EntityRepository(UserEntity)
+class UserRepository extends Repository<UserEntity> implements IUserRepository {
     public async createUser(user: IUser): Promise<IUser> {
-        return getManager().getRepository(User).save(user);
+        return getManager().getRepository(UserEntity).save(user);
     }
 
     public async getUserByEmail(email: string): Promise<IUser | undefined> {
-        return getManager().getRepository(User)
+        return getManager().getRepository(UserEntity)
             .createQueryBuilder('user')
             .where('user.email = :email', { email })
             .andWhere('user.deletedAt IS NULL')
@@ -18,12 +18,12 @@ class UserRepository extends Repository<User> implements IUserRepository {
     }
 
     public async getAllUsers(): Promise<IUser[]> {
-        return getManager().getRepository(User).find({ relations: ['posts'] });
+        return getManager().getRepository(UserEntity).find({ relations: ['posts'] });
     }
 
     // public async updateUser(id: number, password: string, email: string): Promise<IUser> {
     //     return getManager()
-    //         .getRepository(User)
+    //         .getRepository(UserEntity)
     //         .update({ id }, { password, email });
     // }
 }

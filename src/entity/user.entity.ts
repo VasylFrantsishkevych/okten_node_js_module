@@ -1,8 +1,9 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 
 import { CommonFields, ICommonFields } from './commonFields';
-import { IPost, Post } from './post';
-import { config } from '../config/config';
+import { IPost, Post } from './post.entity';
+import { config } from '../config';
+import { IComment, Comment } from './comment.entity';
 
 export interface IUser extends ICommonFields {
     firstName: string;
@@ -12,6 +13,7 @@ export interface IUser extends ICommonFields {
     email: string;
     password: string;
     posts: IPost[];
+    comments: IComment[];
 }
 
 @Entity('users', { database: config.MYSQL_DATABASE_NAME })
@@ -60,4 +62,7 @@ export class User extends CommonFields implements IUser {
 
     @OneToMany(() => Post, (post) => post.user)
         posts: Post[];
+
+    @OneToMany(() => Comment, (comment) => comment.user)
+        comments: Comment[];
 }

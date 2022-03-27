@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { IUser } from '../entity/user';
+import { IUser } from '../entity/user.entity';
 import { userService } from '../services/userService';
 
 class UserController {
