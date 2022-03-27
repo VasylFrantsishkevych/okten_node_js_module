@@ -2,12 +2,17 @@ import { emailActionEnum } from '../enums';
 
 export const emailInfo = {
     [emailActionEnum.WELCOME]: {
-        subject: 'Welcome to Sep-2021',
-        html: 'Hello this is mail',
+        subject: 'Welcome',
+        html: 'Hello. You have registered on the site',
     },
 
-    [emailActionEnum.ACCOUNT_BLOCKED]: {
-        subject: 'Blocked account',
-        html: 'Your account was blocked',
+    [emailActionEnum.LOGIN_TO_SITE]: {
+        subject: 'Login in the site',
+        html: 'You have logged in to your account',
+    },
+
+    [emailActionEnum.LOGGED_OUT]: {
+        subject: 'Logged out',
+        html: 'You are logged out of your account',
     },
 };

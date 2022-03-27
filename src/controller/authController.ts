@@ -11,6 +11,10 @@ import { tokenRepository } from '../repositories';
 class AuthController {
     public async registration(req: Request, res: Response): Promise<Response<ITokenData>> {
         const data = await authService.registration(req.body);
+        const { email } = req.body as IUser;
+
+        await emailService.sendMail(email, emailActionEnum.WELCOME);
+
         res.cookie(
             COOKIE.nameRefreshToken,
             data.refreshToken,
@@ -21,8 +25,9 @@ class AuthController {
     }
 
     public async logout(req: IRequestExtended, res: Response): Promise<Response<string>> {
-        const { id } = req.user as IUser;
+        const { id, email } = req.user as IUser;
 
+        await emailService.sendMail(email, emailActionEnum.LOGGED_OUT);
         await tokenService.deleteUserTokenPair(id);
 
         return res.json('Ok');
@@ -34,7 +39,7 @@ class AuthController {
             const { id, email, password: hashPassword } = req.user as IUser;
             const { password } = req.body;
 
-            await emailService.sendMail(email, emailActionEnum.ACCOUNT_BLOCKED);
+            await emailService.sendMail(email, emailActionEnum.LOGIN_TO_SITE);
             await userService.compareUserPassword(password, hashPassword);
 
             const tokenPair = tokenService.generateTokenPair({ userId: id, userEmail: email });
