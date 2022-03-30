@@ -4,16 +4,17 @@ import {
     authService, emailService, tokenService, userService,
 } from '../services';
 import { IRequestExtended, ITokenData } from '../interfaces';
-import { constants, COOKIE, emailActionEnum } from '../constants';
+import { constants, COOKIE } from '../constants';
 import { IUser } from '../entity/user';
 import { tokenRepository } from '../repositories';
+import { emailActionEnum } from '../enums';
 
 class AuthController {
     public async registration(req: Request, res: Response): Promise<Response<ITokenData>> {
         const data = await authService.registration(req.body);
-        const { email } = req.body as IUser;
+        const user = req.body as IUser;
 
-        await emailService.sendMail(email, emailActionEnum.WELCOME);
+        await emailService.sendMail(user, emailActionEnum.WELCOME);
 
         res.cookie(
             COOKIE.nameRefreshToken,
@@ -25,9 +26,10 @@ class AuthController {
     }
 
     public async logout(req: IRequestExtended, res: Response): Promise<Response<string>> {
-        const { id, email } = req.user as IUser;
+        const user = req.user as IUser;
+        const { id } = req.user as IUser;
 
-        await emailService.sendMail(email, emailActionEnum.LOGGED_OUT);
+        await emailService.sendMail(user, emailActionEnum.LOGGED_OUT);
         await tokenService.deleteUserTokenPair(id);
 
         return res.json('Ok');
@@ -36,10 +38,13 @@ class AuthController {
     // Створюємо два токена юзеру який залогувався та зберігаємо їх в базу
     public async login(req: IRequestExtended, res: Response, next: NextFunction) {
         try {
-            const { id, email, password: hashPassword } = req.user as IUser;
+            const user = req.user as IUser;
+            const {
+                id, email, firstName, password: hashPassword,
+            } = req.user as IUser;
             const { password } = req.body;
 
-            await emailService.sendMail(email, emailActionEnum.LOGIN_TO_SITE);
+            await emailService.sendMail(user, emailActionEnum.LOGIN_TO_SITE, { userName: firstName });
             await userService.compareUserPassword(password, hashPassword);
 
             const tokenPair = tokenService.generateTokenPair({ userId: id, userEmail: email });

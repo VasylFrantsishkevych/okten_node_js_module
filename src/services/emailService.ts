@@ -1,15 +1,30 @@
-import { emailActionEnum, emailInfo, emailTransporter } from '../constants';
+import { SentMessageInfo } from 'nodemailer';
+
+import { emailInfo, emailTransporter } from '../constants';
+import { IUser } from '../entity/user';
+import { emailActionEnum } from '../enums';
 
 class EmailService {
-    sendMail(userEmail: string, action: emailActionEnum) {
-        const { subject, html } = emailInfo[action];
+    async sendMail(user: IUser, action: emailActionEnum, context = {}): Promise<SentMessageInfo> {
+        const { subject, template } = emailInfo[action];
+        const { email, firstName } = user;
 
-        return emailTransporter.sendMail({
+        // Object.assign(context, { url: 'https://google.com', name: firstName });
+
+        // const html = await templateRender.render(template, context);
+
+        const mailOptions = {
             from: 'No Reply Sep-2021',
-            to: userEmail,
+            to: email,
             subject,
-            html,
-        });
+            template,
+            context: {
+                name: firstName,
+                url: 'https://google.com',
+            },
+        };
+
+        return emailTransporter.sendMail(mailOptions);
     }
 }
 
