@@ -2,7 +2,7 @@ import { NextFunction, Response } from 'express';
 
 import { tokenService, userService } from '../services';
 import { IRequestExtended } from '../interfaces';
-import { tokenRepository } from '../repositories';
+import { actionTokenRepository, tokenRepository } from '../repositories';
 import { constants } from '../constants';
 import { authValidators } from '../validators';
 import { ErrorHandler } from '../error/ErrorHandler';
@@ -79,7 +79,44 @@ class AuthMiddleware {
         }
     }
 
-    async validatorRegistration(req: IRequestExtended, res: Response, next: NextFunction): Promise<void> {
+    public async checkActionToken(req: IRequestExtended, res: Response, next: NextFunction) {
+        try {
+            // беремо токен з header
+            const actionToken = req.get(constants.AUTHORIZATION);
+            // Перевіряємо чи є токен в базі
+            if (!actionToken) {
+                next(new ErrorHandler('No token', 401));
+                return;
+            }
+            // Розшифровуємо юзера
+            const { userEmail } = tokenService.verifyToken(actionToken, 'action');
+            // Шукаємо refreshToken токен в базі
+            const tokenPairFromDB = await actionTokenRepository.findByParams({ actionToken });
+
+            if (!tokenPairFromDB) {
+                next(new ErrorHandler('Token not valid', 401));
+                return;
+            }
+            // Шукаємо юзера по емейлу
+            const userFromToken = await userService.getUserByEmail(userEmail);
+
+            if (!userFromToken) {
+                next(new ErrorHandler('Token not valid', 401));
+                return;
+            }
+
+            // Розширили request додавши юзера з
+            req.user = userFromToken;
+            next();
+        } catch (e: any) {
+            res.status(401).json({
+                status: 401,
+                message: e.message,
+            });
+        }
+    }
+
+    public async validatorRegistration(req: IRequestExtended, res: Response, next: NextFunction): Promise<void> {
         try {
             const { error, value } = authValidators.registration.validate(req.body);
 
@@ -95,7 +132,7 @@ class AuthMiddleware {
         }
     }
 
-    async validatorLogin(req: IRequestExtended, res: Response, next: NextFunction): Promise<void> {
+    public async validatorLogin(req: IRequestExtended, res: Response, next: NextFunction): Promise<void> {
         try {
             const { error, value } = authValidators.login.validate(req.body);
 
@@ -106,6 +143,40 @@ class AuthMiddleware {
             req.body = value;
             next();
         } catch (e: any) {
+            next(e);
+        }
+    }
+
+    // Перевірка валідності емейла
+    public async checkEmailValid(req: IRequestExtended, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const { error, value } = authValidators.email.validate(req.body);
+
+            if (error) {
+                next(new ErrorHandler(error.details[0].message));
+                return;
+            }
+
+            req.body = value;
+            next();
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    // Перевірка валідності паролю
+    public async checkPassValid(req: IRequestExtended, res: Response, next: NextFunction) {
+        try {
+            const { error, value } = authValidators.pass.validate(req.body);
+
+            if (error) {
+                next(new ErrorHandler(error.details[0].message));
+                return;
+            }
+
+            req.body = value;
+            next();
+        } catch (e) {
             next(e);
         }
     }

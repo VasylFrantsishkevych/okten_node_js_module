@@ -14,6 +14,14 @@ class UserService {
         return userRepository.createUser(dataToSave);
     }
 
+    // Обновлення даних юзера
+    public async updateUser(id: number, obj: Partial<IUser>): Promise<object | undefined> {
+        if (obj.password) {
+            obj.password = await this._hashPassword(obj.password);
+        }
+        return userRepository.updateUser(id, obj);
+    }
+
     public async getUserByEmail(email: string): Promise<IUser | undefined> {
         return userRepository.getUserByEmail(email);
     }

@@ -1,11 +1,11 @@
 import { SentMessageInfo } from 'nodemailer';
 
-import { emailInfo, emailTransporter } from '../constants';
+import { constants, emailInfo, emailTransporter } from '../constants';
 import { IUser } from '../entity/user';
-import { emailActionEnum } from '../enums';
+import { EmailActionEnum } from '../enums';
 
 class EmailService {
-    async sendMail(user: IUser, action: emailActionEnum, context = {}): Promise<SentMessageInfo> {
+    async sendMail(user: IUser, action: EmailActionEnum, tokenAction?: string): Promise<SentMessageInfo> {
         const { subject, template } = emailInfo[action];
         const { email, firstName } = user;
 
@@ -21,6 +21,8 @@ class EmailService {
             context: {
                 name: firstName,
                 url: 'https://google.com',
+                urlResetPassword: constants.URL_RESET_PASSWORD,
+                token: tokenAction,
             },
         };
 

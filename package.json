@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start:dev": "nodemon app.ts",
-    "build": "rimraf dist && copyfiles -f src/views/*.* dist/static/ && tsc-watch --onSuccess",
+    "build": "rimraf dist && copyfiles -f src/views/*.* dist/viesw/ && tsc-watch --onSuccess",
     "lint": "eslint --cache --ext .js,.ts, src",
     "lint:fix": "npm run lint -- --fix",
     "typeorm": "node -r ts-node/register ./node_modules/typeorm/cli.js",

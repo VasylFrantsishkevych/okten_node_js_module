@@ -31,4 +31,12 @@ export const authValidators = {
         email: commonValidators.emailValidator,
         password: commonValidators.passwordValidator,
     }),
+
+    email: Joi.object({
+        email: commonValidators.emailValidator.trim(),
+    }),
+
+    pass: Joi.object({
+        password: commonValidators.passwordValidator.trim(),
+    }),
 };

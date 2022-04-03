@@ -1,21 +1,31 @@
-import { emailActionEnum } from '../../enums';
+import { EmailActionEnum } from '../../enums';
 
 export const emailInfo = {
-    [emailActionEnum.WELCOME]: {
+    [EmailActionEnum.WELCOME]: {
         subject: 'Welcome',
         template: 'emailRegistration',
         // template: 'registration',
     },
 
-    [emailActionEnum.LOGIN_TO_SITE]: {
+    [EmailActionEnum.LOGIN_TO_SITE]: {
         subject: 'Login in the site',
         template: 'emailLogin',
         // template: 'login',
     },
 
-    [emailActionEnum.LOGGED_OUT]: {
+    [EmailActionEnum.LOGGED_OUT]: {
         subject: 'Logged out',
         template: 'emailLogout',
         // template: 'logout',
+    },
+
+    [EmailActionEnum.FORGOT_PASSWORD]: {
+        subject: 'Forgot password',
+        template: 'emailForgotPassword',
+    },
+
+    [EmailActionEnum.RESET_PASSWORD]: {
+        subject: 'New password',
+        template: 'emailResetPassword',
     },
 };
