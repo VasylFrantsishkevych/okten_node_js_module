@@ -4,4 +4,5 @@ export enum EmailActionEnum {
     LOGIN_TO_SITE,
     FORGOT_PASSWORD,
     RESET_PASSWORD,
+    SEND_MAIL_ALL_USERS
 }

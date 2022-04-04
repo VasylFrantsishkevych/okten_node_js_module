@@ -28,4 +28,9 @@ export const emailInfo = {
         subject: 'New password',
         template: 'emailResetPassword',
     },
+
+    [EmailActionEnum.SEND_MAIL_ALL_USERS]: {
+        subject: 'Discounts',
+        template: 'emailAllUsers',
+    },
 };

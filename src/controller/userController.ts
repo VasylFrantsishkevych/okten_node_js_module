@@ -9,6 +9,11 @@ class UserController {
         return res.json(createUser);
     }
 
+    public async getAllUsers(req: Request, res: Response): Promise<Response<IUser[]>> {
+        const users = await userService.getAllUsers();
+        return res.json(users);
+    }
+
     public async getUserByEmail(req: Request, res: Response): Promise<Response<IUser>> {
         const { email } = req.params;
 

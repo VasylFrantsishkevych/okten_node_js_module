@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 
-import { userRepository } from '../repositories/user/userRepository';
+import { userRepository } from '../repositories';
 import { IUser } from '../entity/user';
 import { config } from '../config/config';
 

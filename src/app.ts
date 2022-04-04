@@ -3,6 +3,7 @@ import express from 'express';
 import { createConnection } from 'typeorm';
 import path from 'path';
 import { engine } from 'express-handlebars';
+import { cronRun } from './cron';
 
 import { apiRouter } from './router';
 import { config } from './config/config';
@@ -26,6 +27,7 @@ app.listen(PORT, async () => {
         const connection = await createConnection();
         if (connection) {
             console.log('Database connection');
+            await cronRun();
         }
     } catch (err) {
         if (err) console.log(err);

@@ -28,6 +28,25 @@ class EmailService {
 
         return emailTransporter.sendMail(mailOptions);
     }
+
+    async sendMailAllUsers(user: IUser, action: EmailActionEnum): Promise<SentMessageInfo> {
+        const { subject, template } = emailInfo[action];
+        const { email, firstName, lastName } = user;
+
+        const mailOptions = {
+            from: 'Your Shop',
+            to: email,
+            subject,
+            template,
+            context: {
+                name: firstName,
+                serName: lastName,
+                url: 'https://google.com',
+            },
+        };
+
+        return emailTransporter.sendMail(mailOptions);
+    }
 }
 
 export const emailService = new EmailService();
