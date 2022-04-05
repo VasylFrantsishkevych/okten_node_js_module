@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import { userRepository } from '../repositories';
 import { IUser } from '../entity/user';
 import { config } from '../config/config';
+import { IPaginationResponse } from '../interfaces/paginationResponse.interface';
 
 class UserService {
     public async createUser(user: IUser): Promise<IUser> {
@@ -30,7 +31,7 @@ class UserService {
         return userRepository.getAllUsers();
     }
 
-    public async getUserPagination(filterObject: any, page: number, perPage: number) {
+    public async getUserPagination(filterObject: IUser, page: number, perPage: number): Promise<IPaginationResponse<IUser>> {
         return userRepository.getUserPagination(filterObject, perPage, page);
     }
 
