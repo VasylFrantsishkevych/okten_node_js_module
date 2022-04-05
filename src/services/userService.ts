@@ -1,8 +1,9 @@
 import bcrypt from 'bcrypt';
+import { DeleteResult, UpdateResult } from 'typeorm';
 
-import { userRepository } from '../repositories/user/userRepository';
-import { IUser } from '../entity/user.entity';
-import { config } from '../config/config';
+import { IUser } from '../entity';
+import { config } from '../config';
+import { userRepository } from '../repositories';
 
 class UserService {
     public async createUser(user: IUser): Promise<IUser> {
@@ -14,17 +15,21 @@ class UserService {
         return userRepository.createUser(dataToSave);
     }
 
-    public async getUserByEmail(email: string): Promise<IUser | undefined> {
-        return userRepository.getUserByEmail(email);
-    }
-
     public async getAllUsers(): Promise<IUser[]> {
         return userRepository.getAllUsers();
     }
 
-    // public async updateUser(id: number, password: string, email: string): Promise<IUser> {
-    //     return userRepository.updateUser(id, password, email);
-    // }
+    public async getUserByEmail(email: string): Promise<IUser | undefined> {
+        return userRepository.getUserByEmail(email);
+    }
+
+    public async updateUser(id: string, password: string, email: string): Promise<UpdateResult> {
+        return userRepository.updateUser(+id, password, email);
+    }
+
+    public async deleteUser(id: string): Promise<DeleteResult> {
+        return userRepository.deleteUser(+id);
+    }
 
     private async _hashPassword(password: string): Promise<string> {
         return bcrypt.hash(password, Number(config.USER_SALT_ROUNDS));
