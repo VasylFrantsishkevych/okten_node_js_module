@@ -28,11 +28,12 @@
         "class-methods-use-this": "off",
         "no-unused-vars": ["error", {
             "args": "none",
-            "varsIgnorePattern": "^[A-Z]"
+            "varsIgnorePattern": "^[A-Za-z]"
         }],
         "no-underscore-dangle": "off",
         "no-shadow": "off",
-        "no-param-reassign": "off"
+        "no-param-reassign": "off",
+        "default-param-last": "off"
     },
     "settings": {
         "import/resolver": {

@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 import { IUser } from '../entity/user';
 import { userService } from '../services';
@@ -19,6 +19,17 @@ class UserController {
 
         const user = await userService.getUserByEmail(email);
         return res.json(user);
+    }
+
+    public async getUserPagination(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { page = 1, perPage = 25, ...other } = req.query;
+            const userPagination = await userService.getUserPagination(other, +page, +perPage);
+
+            res.json(userPagination);
+        } catch (e) {
+            next(e);
+        }
     }
 }
 

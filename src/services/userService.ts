@@ -30,6 +30,10 @@ class UserService {
         return userRepository.getAllUsers();
     }
 
+    public async getUserPagination(filterObject: any, page: number, perPage: number) {
+        return userRepository.getUserPagination(filterObject, perPage, page);
+    }
+
     public async compareUserPassword(password: string, hash: string): Promise<void | Error> {
         const isPasswordUnique = await bcrypt.compare(password, hash);
 
