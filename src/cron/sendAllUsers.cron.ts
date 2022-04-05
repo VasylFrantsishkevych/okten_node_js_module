@@ -10,7 +10,6 @@ export const sendAllUsers = async () => {
         const userMail = users.map(async (user) => {
             await emailService.sendMailAllUsers(user, EmailActionEnum.SEND_MAIL_ALL_USERS);
         });
-        Promise.all(userMail)
-            .then();
+        await Promise.all(userMail);
     });
 };
