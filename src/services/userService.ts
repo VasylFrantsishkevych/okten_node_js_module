@@ -31,7 +31,7 @@ class UserService {
         return userRepository.getAllUsers();
     }
 
-    public async getUserPagination(filterObject: IUser, page: number, perPage: number): Promise<IPaginationResponse<IUser>> {
+    public async getUserPagination(filterObject: any, page: number, perPage: number): Promise<IPaginationResponse<IUser>> {
         return userRepository.getUserPagination(filterObject, perPage, page);
     }
 

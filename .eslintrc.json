@@ -11,6 +11,9 @@
     "parserOptions": {
         "ecmaVersion": "latest"
     },
+    "ignorePatterns": [
+        "**/*.html"
+    ],
     "plugins": [
         "@typescript-eslint"
     ],
