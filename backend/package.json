@@ -4,12 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:dev": "nodemon app.ts",
-    "build": "rimraf dist && copyfiles -f src/views/*.* dist/viesw/ && tsc-watch --onSuccess",
-    "lint": "eslint --cache --ext .js,.ts, src",
+    "start:dev": "../node_modules/.bin/nodemon app.ts",
+    "build": "../node_modules/.bin/rimraf backend/dist && copyfiles -f backend/src/views/*.* dist/viesw/ && tsc-watch --onSuccess",
+    "lint": "../node_modules/.bin/eslint --cache --ext .js,.ts, backend/src",
     "lint:fix": "npm run lint -- --fix",
-    "typeorm": "node -r ts-node/register ./node_modules/typeorm/cli.js",
-    "migration:generate": "typeorm migration:create -n",
+    "typeorm": "node -r ts-node/register ../node_modules/typeorm/cli.js",
+    "migration:generate": "../node_modules/.bin/typeorm migration:create -n",
     "migration:run": "npm run typeorm migration:run",
     "migration:revert": "npm run typeorm migration:revert"
   },
