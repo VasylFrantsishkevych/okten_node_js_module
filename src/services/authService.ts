@@ -1,7 +1,7 @@
 import { userService } from './userService';
-import { IUser } from '../entity/user.entity';
+import { IUser } from '../entity';
 import { tokenService } from './tokenService';
-import { ITokenData } from '../interfaces/token.interface';
+import { ITokenData } from '../interfaces';
 
 class AuthService {
     public async registration(body: IUser): Promise<ITokenData> {
@@ -18,7 +18,7 @@ class AuthService {
     private async _getTokenData(userData: IUser): Promise<ITokenData> {
         const { id, email } = userData;
         const tokensPair = await tokenService.generateTokenPair({ userId: id, userEmail: email });
-        await tokenService.saveToken(id, tokensPair.refreshToken);
+        await tokenService.saveToken(id, tokensPair.refreshToken, tokensPair.accessToken);
 
         return {
             ...tokensPair,

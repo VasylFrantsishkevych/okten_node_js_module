@@ -32,6 +32,14 @@ class UserRepository extends Repository<User> implements IUserRepository {
     public async deleteUser(id: number): Promise<DeleteResult> {
         return getManager().getRepository(User).delete({ id });
     }
+
+    public async getUserByEmailOrPhone(email: string, phone: string): Promise<IUser | undefined> {
+        return getManager().getRepository(User)
+            .createQueryBuilder('user')
+            .where('user.email = :email', { email })
+            .orWhere('user.phone = :phone', { phone })
+            .getOne();
+    }
 }
 
 export const userRepository = new UserRepository();

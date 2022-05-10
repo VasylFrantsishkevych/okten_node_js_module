@@ -1,10 +1,10 @@
 import 'reflect-metadata';
 import express from 'express';
-import { createConnection, getManager } from 'typeorm';
+import { createConnection } from 'typeorm';
 
-import { apiRouter } from './router/apiRouter';
-import { config } from './config/config';
-import { User } from './entity/user.entity';
+import { apiRouter } from './router';
+import { config } from './config';
+// import { User } from './entity/user.entity';
 
 const app = express();
 
@@ -21,27 +21,27 @@ app.use(apiRouter);
 // console.log(users);
 // res.json(users);
 // });
-
+//
 // app.post('/users', async (req: Request, res: Response) => {
 //     const createUser = await getManager().getRepository(UserEntity).save(req.body);
 //     res.json(createUser);
 // });
-
-app.put('/users/:id', async (req, res) => {
-    const { password, email } = req.body;
-    const createdUser = await getManager().getRepository(User)
-        .update({ id: Number(req.params.id) }, {
-            password,
-            email,
-        });
-    res.json(createdUser);
-});
-
-app.delete('/users/:id', async (req, res) => {
-    const deleteUser = await getManager().getRepository(User)
-        .delete({ id: Number(req.params.id) });
-    res.json(deleteUser);
-});
+//
+// app.put('/users/:id', async (req, res) => {
+//     const { password, email } = req.body;
+//     const createdUser = await getManager().getRepository(User)
+//         .update({ id: Number(req.params.id) }, {
+//             password,
+//             email,
+//         });
+//     res.json(createdUser);
+// });
+//
+// app.delete('/users/:id', async (req, res) => {
+//     const deleteUser = await getManager().getRepository(User)
+//         .delete({ id: Number(req.params.id) });
+//     res.json(deleteUser);
+// });
 
 const { PORT } = config;
 

@@ -1,10 +1,9 @@
-export interface ITokenDataToSave {
-    refreshToken: string;
-    userId: number;
-}
 export interface ITokenPair {
     accessToken: string;
     refreshToken: string;
+}
+export interface ITokenDataToSave extends ITokenPair{
+    userId: number;
 }
 
 export interface IUserPayload {

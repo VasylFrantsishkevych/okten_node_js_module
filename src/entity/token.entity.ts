@@ -4,9 +4,10 @@ import {
 
 import { CommonFields, ICommonFields } from './commonFields';
 import { User } from './user.entity';
-import { config } from '../config/config';
+import { config } from '../config';
 
 export interface IToken extends ICommonFields {
+    accessToken: string;
     refreshToken: string;
     userId: number;
 }
@@ -19,6 +20,13 @@ export class Token extends CommonFields implements IToken {
         nullable: false,
     })
         refreshToken: string;
+
+    @Column({
+        type: 'varchar',
+        width: 255,
+        nullable: false,
+    })
+        accessToken: string;
 
     @Column({
         type: 'int',
